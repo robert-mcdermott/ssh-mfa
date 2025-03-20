@@ -5,7 +5,7 @@ import sys
 import subprocess
 import os
 
-def get_totp_code(namespace, servername):
+def get_totp_code(namespace, server_identifier):
     totp_password = os.getenv("TOTP_PASS")
 
     if not totp_password:
@@ -14,7 +14,7 @@ def get_totp_code(namespace, servername):
 
     try:
         result = subprocess.run([
-            "totp-cli", "generate", namespace, servername
+            "totp-cli", "generate", namespace, server_identifier
         ], capture_output=True, text=True, input=totp_password)
 
         if result.returncode == 0:
@@ -26,11 +26,11 @@ def get_totp_code(namespace, servername):
         print(f"Error generating TOTP: {e}", file=sys.stderr)
         sys.exit(1)
 
-def ssh_with_totp(server, namespace):
+def ssh_with_totp(server_identifier, namespace):
     password = getpass.getpass("SSH Password: ")
-    totp_code = get_totp_code(namespace, server)
+    totp_code = get_totp_code(namespace, server_identifier)
 
-    ssh_command = f"ssh {server}"
+    ssh_command = f"ssh {server_identifier}"
     child = pexpect.spawn(ssh_command, encoding='utf-8', timeout=10)
 
     try:
@@ -50,11 +50,11 @@ def ssh_with_totp(server, namespace):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python ssh_totp.py <server> <namespace>")
+        print("Usage: python ssh-mfa.py <user@server> <namespace>")
         sys.exit(1)
 
-    server = sys.argv[1]
+    server_identifier = sys.argv[1]  # Can be either "server" or "user@server"
     namespace = sys.argv[2]
 
-    ssh_with_totp(server, namespace)
+    ssh_with_totp(server_identifier, namespace)
 

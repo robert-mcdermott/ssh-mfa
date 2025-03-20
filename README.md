@@ -19,11 +19,17 @@ Ensure that your SSH servers are already configured with `totp-cli` for generati
 ## Usage
 Run the script using the following command:
 ```sh
-python ssh_mfa.py <server-name> <namespace>
+python ssh_mfa.py <user@server> <namespace>
 ```
 Where:
-- `<server-name>` is the remote SSH server you want to connect to.
+- `<user@server>` is the remote SSH server with optional username (e.g., `user2@example.com` or just `example.com`).
 - `<namespace>` is the namespace used in `totp-cli` to generate the correct TOTP code.
+
+### TOTP Profile Setup
+When using the user@server format, make sure to create your TOTP profile with the same identifier:
+```sh
+totp-cli new <namespace> user@server
+```
 
 ## Environment Variables (Optional)
 The script can use an environment variable `TOTP_PASS` to store the password required for `totp-cli` to decrypt the stored credentials.
@@ -32,7 +38,7 @@ The script can use an environment variable `TOTP_PASS` to store the password req
 You can export the password before running the script to avoid being prompted:
 ```sh
 export TOTP_PASS=<your_totp_password>
-python ssh_mfa.py <server-name> <namespace>
+python ssh_mfa.py <user@server> <namespace>
 ```
 Alternatively, if `TOTP_PASS` is not set, the script will prompt for it during execution.
 
@@ -48,3 +54,4 @@ Alternatively, if `TOTP_PASS` is not set, the script will prompt for it during e
 ## Notes
 - Ensure that `totp-cli` is installed and configured correctly with your accounts before using this script.
 - The script only automates login and does not store any credentials persistently.
+- When using different usernames for SSH, be sure to set up your TOTP profiles using the full `user@server` format.
