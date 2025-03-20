@@ -6,13 +6,13 @@ This utility is a Python wrapper script that automates SSH login for servers pro
 
 ### Install `pexpect`
 The script requires the `pexpect` Python module for handling interactive SSH sessions. Install it using:
+
 ```sh
 pip install pexpect # or uv sync if you are using uv and cloned this repo
 ```
 
 ### Install `totp-cli`
 The script uses [`totp-cli`](https://github.com/yitsushi/totp-cli) to generate TOTP codes. Install it followign the instructions for your enviroment, or go to the releases page and download the appropriate version for your enviroment
-```
 
 Ensure that your SSH servers are already configured with `totp-cli` for generating codes.
 
